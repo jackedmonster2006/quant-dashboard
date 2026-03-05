@@ -18,7 +18,13 @@ load_dotenv()
 # We will try to use the Google Gemini SDK for the macro AI summary
 try:
     import google.generativeai as genai
-    gemini_key = os.getenv("GEMINI_API_KEY")
+    
+    # Streamlit Cloud puts secrets in st.secrets, but local uses os.getenv
+    try:
+        gemini_key = st.secrets["GEMINI_API_KEY"]
+    except:
+        gemini_key = os.getenv("GEMINI_API_KEY")
+        
     if gemini_key:
         genai.configure(api_key=gemini_key)
         # Verify it works by checking the model

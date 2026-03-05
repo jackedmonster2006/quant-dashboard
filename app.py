@@ -410,8 +410,17 @@ if ticker_input:
             st.subheader("🧠 Generative AI Analyst Brief")
             st.markdown("Sends the recent news headlines and fundamentals to Google Gemini to write a summary.")
             
+            # Display debugging info so the user knows what keys Streamlit actually sees
+            try:
+                debug_secrets = list(st.secrets.keys())
+            except:
+                debug_secrets = []
+                
             if not ai_client:
-                st.warning("⚠️ No Gemini API Key found in the `.env` file. Add `GEMINI_API_KEY` to run the macro summary.")
+                st.warning("⚠️ No Gemini API Key found.")
+                with st.expander("Deployment Debugger"):
+                    st.write("Streamlit Cloud Secrets Found:", debug_secrets)
+                    st.write("Did you click Advanced Settings -> Secrets before deploying and paste `GEMINI_API_KEY=...`?")
             else:
                 if st.button("Generate Analyst Brief"):
                     with st.spinner("Consulting AI Quant..."):

@@ -400,9 +400,14 @@ if ticker_input:
             with st.expander("📚 Read Deep Company Profile", expanded=True):
                 sector = stock_info.get('sector', 'Unknown Sector')
                 industry = stock_info.get('industry', 'Unknown Industry')
-                employees = stock_info.get('fullTimeEmployees', 'Unknown')
+                employees = stock_info.get('fullTimeEmployees', 0)
                 
-                st.markdown(f"**Sector:** {sector} | **Industry:** {industry} | **Employees:** {employees:,}")
+                try:
+                    emp_str = f"{int(employees):,}" if employees else "Unknown"
+                except:
+                    emp_str = "Unknown"
+                    
+                st.markdown(f"**Sector:** {sector} | **Industry:** {industry} | **Employees:** {emp_str}")
                 st.markdown("---")
                 st.write(stock_info.get('longBusinessSummary', 'No description available in the API for this ticker.'))
 

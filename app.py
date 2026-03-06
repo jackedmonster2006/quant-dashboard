@@ -448,9 +448,7 @@ if ticker_input:
                             st.success("Brief Generated Successfully")
                             st.write(response.text)
                         except Exception as e:
-                            st.error(f"Error generating brief. Check Streamlit logs.")
-                            # Print the actual error to the server logs so we can see what's failing
-                            print("GEMINI API ERROR:", str(e))
+                            st.error(f"Google Gemini Error: {str(e)}")
 
         with tab4:
             st.subheader(f"📰 Live News Feed: {company_name}")

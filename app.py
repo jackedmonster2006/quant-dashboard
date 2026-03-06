@@ -87,9 +87,17 @@ def fetch_data(ticker, period):
     hist = stock.history(period=period)
     
     # Try to grab fundamentals
+    info = {}
     try:
+        # yfinance caching or fast-polling can sometimes cause info to return empty
+        # We force a fresh request by re-instantiating the ticker if needed
         info = stock.info
-    except:
+        if not info or len(info) < 5:
+            # Fallback retry
+            temp_stock = yf.Ticker(ticker)
+            info = temp_stock.info
+    except Exception as e:
+        print(f"Failed to fetch fundamentals for {ticker}: {e}")
         info = {}
         
     if hist.empty:

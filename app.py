@@ -96,14 +96,19 @@ def fetch_data(ticker, period):
             # Fallback retry using fast_info which bypasses some Yahoo blocks
             temp_stock = yf.Ticker(ticker)
             fast_info = temp_stock.get_fast_info()
-            info = dict(fast_info)
+            # Fast info acts like a dict but isn't quite one, we need to extract the keys manually
+            info = {}
+            for key in fast_info.keys():
+                info[key] = fast_info[key]
+                
             # Map fast_info keys to standard info keys so UI doesn't break
-            info['marketCap'] = info.get('market_cap', None)
-            info['trailingPE'] = info.get('trailing_pe', None)
-            info['dividendYield'] = info.get('dividend_yield', None)
+            info['marketCap'] = info.get('marketCap', info.get('market_cap', None))
+            info['trailingPE'] = info.get('trailingPE', info.get('trailing_pe', None))
+            info['dividendYield'] = info.get('dividendYield', info.get('dividend_yield', None))
             # Add placeholders for text fields if using fast_info
-            if 'sector' not in info: info['sector'] = 'Unavailable in Fast Mode'
-            if 'industry' not in info: info['industry'] = 'Unavailable in Fast Mode'
+            if 'sector' not in info: info['sector'] = 'Unavailable in Cloud Mode'
+            if 'industry' not in info: info['industry'] = 'Unavailable in Cloud Mode'
+            if 'longBusinessSummary' not in info: info['longBusinessSummary'] = 'Because this app is running on Streamlit Cloud, Yahoo Finance occasionally blocks deep company descriptions to prevent automated scraping. However, the AI Quant Summary and Technical Charts continue to function by using real-time API fallbacks.'
     except Exception as e:
         print(f"Failed to fetch fundamentals for {ticker}: {e}")
         info = {}
